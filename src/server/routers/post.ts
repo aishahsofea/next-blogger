@@ -2,6 +2,7 @@ import { publicProcedure, router } from "../trpc";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   id: true,
@@ -36,6 +37,23 @@ export const postRouter = router({
       const post = await prisma.post.create({
         data: input,
       });
+      return post;
+    }),
+  byId: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ input }) => {
+      const post = await prisma.post.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: defaultPostSelect,
+      });
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No post with id ${input.id}`,
+        });
+      }
       return post;
     }),
 });
