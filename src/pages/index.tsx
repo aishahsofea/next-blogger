@@ -1,8 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import { trpc } from "~/utils/trpc";
+import styles from "../../styles/Home.module.css";
 
 export default function Home() {
+  const postsQuery = trpc.post.list.useQuery({ limit: 5 });
+  console.log(postsQuery);
+
   return (
     <div className={styles.container}>
       <Head>
