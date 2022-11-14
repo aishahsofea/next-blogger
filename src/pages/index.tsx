@@ -1,30 +1,9 @@
 import Head from "next/head";
-import Image from "next/image";
+import { PostList, PostForm } from "~/components";
 import { trpc } from "~/utils/trpc";
 
 export default function Home() {
-  const utils = trpc.useContext();
   const postsQuery = trpc.post.list.useQuery({ limit: 5 });
-  const addPostMutation = trpc.post.add.useMutation({
-    async onSuccess() {
-      await utils.post.list.invalidate;
-    },
-  });
-
-  console.log(postsQuery);
-
-  // add hardcoded data
-  const handleAddPost = async () => {
-    try {
-      await addPostMutation.mutate({
-        title: "This is the title",
-        content:
-          "This is the content of the blogpost. It is gonna be hardcoded for now",
-      });
-    } catch (error) {
-      console.error({ error }, "Failed to add a post");
-    }
-  };
 
   return (
     <div>
@@ -34,27 +13,17 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className="bg-red-400">
-          Welcome to <a href="https://nextjs.org">the Next blog!</a>
-        </h1>
-        <div>
-          <button onClick={handleAddPost}>Add a post</button>
-        </div>
-      </main>
+      <div className="flex flex-row justify-center items-center">
+        <div className="flex flex-col p-8 w-8/12">
+          {postsQuery.isLoading && <div>Loading blog posts</div>}
+          {postsQuery.isError && (
+            <div>There is an error loading the blog posts</div>
+          )}
+          {postsQuery.data && <PostList posts={postsQuery.data?.items} />}
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+          <PostForm />
+        </div>
+      </div>
     </div>
   );
 }

@@ -7,8 +7,8 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
   id: true,
   title: true,
   content: true,
-  createdAt: true,
-  updatedAt: true,
+  // createdAt: true,
+  // updatedAt: true,
 });
 
 export const postRouter = router({
