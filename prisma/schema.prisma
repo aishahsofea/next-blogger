@@ -9,13 +9,14 @@ generator client {
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
 model Post {
   id        String   @id @default(uuid())
   title     String
-  content   String
+  content   String   @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

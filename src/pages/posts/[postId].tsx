@@ -10,16 +10,16 @@ const Post = ({ postId }: PostId) => {
   const post = trpc.post.byId.useQuery({ id: postId });
 
   return (
-    <>
+    <div className="flex flex-row justify-center items-center">
       {post.isLoading && <div>Loading post for id {postId}</div>}
       {post.isError && <div>There is an error getting the post</div>}
       {post.data && (
-        <div className="border-b-2 my-5">
-          <h2 className="text-lg font-semibold">{post.data.title}</h2>
-          <p>{post.data.content}</p>
+        <div className="my-5 p-5 w-8/12">
+          <h2 className="text-lg font-semibold ">{post.data.title}</h2>
+          <p className="border-dotted border-2 p-3 my-5">{post.data.content}</p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
